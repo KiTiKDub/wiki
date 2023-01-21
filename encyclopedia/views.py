@@ -1,6 +1,9 @@
 from django.shortcuts import render
 import markdown2
 from django import forms
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+import random
 
 from . import util
 
@@ -27,6 +30,40 @@ def entry(request, entry):
 
 
 def newpage(request):
+
+    if request.method == "POST":
+        form = NewPageForm(request.POST)
+
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            util.save_entry(title, content)
+            return HttpResponseRedirect(reverse("entry", kwargs={'entry': title}))
+        else:
+            return render(request, "encyclopedia/newpage.html", {
+                "form": form,
+                "new": True
+            })
+
     return render(request, "encyclopedia/newpage.html", {
-        "form": NewPageForm()
+        "form": NewPageForm(),
+        "new": True
+    })
+
+def randompage(request):
+    list = util.list_entries()
+    new = random.choice(list)
+
+    return HttpResponseRedirect(reverse("entry", kwargs={'entry': new}))
+
+def edit(request, entry):
+    content = util.get_entry(entry)
+    initial_dict = {
+        "title": entry,
+        "content": content
+    }
+    editForm = NewPageForm(initial=initial_dict)
+
+    return render(request, "encyclopedia/newpage.html", {
+        "editForm": editForm
     })

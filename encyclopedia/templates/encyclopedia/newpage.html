@@ -6,11 +6,21 @@
 
 {% block body %}
 
+{% if new %}
 <h1>Create a new page</h1>
-<form action="#" method="post">
+<form action="{% url 'New Page' %}" method="post">
     {% csrf_token %}
     {{form}}
     <input type="submit">
 </form>
 
-{% endblock %}
+{% else %}
+<h1>Edit Page</h1>
+<form action="{% url 'New Page' %}" method="post">
+    {% csrf_token %}
+    {{editForm}}
+    <input type="submit">
+</form>
+{% endif %}
+
+{% endblock %} 
