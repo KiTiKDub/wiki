@@ -1,0 +1,20 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Error
+{% endblock %}
+
+{% block body %}
+
+{% if url_request %}
+
+<h1>Error! Page does not exist</h1>
+<h3><a href="{% url 'index' %}">Return to home</a> </h3>
+
+{% else %}
+
+<h1>Error! {{title}} already exits. See entry <a href="{% url 'entry' title %}">here</a> </h1>
+
+{% endif %}
+
+{% endblock %}
